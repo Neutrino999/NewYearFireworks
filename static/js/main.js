@@ -454,6 +454,10 @@ newEmbellishment.prototype = {
         // 记录下当前的角度，作为“基准”
         baseAngleX = angleX;
         baseAngleY = angleY;
+
+        // 播放背景音乐
+        let audio = document.getElementById('bgm');
+        audio.play();
     }
 
     // 拖拽中
@@ -494,3 +498,11 @@ newEmbellishment.prototype = {
     document.addEventListener('touchmove', onDrag, { passive: false });
     document.addEventListener('touchend', endDrag, { passive: false });
 })();  
+
+// ========== 点击魔方跳转到Github ==========
+document.addEventListener('DOMContentLoaded', function() {
+  var link = document.querySelector('.face-bottom a');
+  link.addEventListener('touchstart', function() {
+    window.location.href = link.href;
+  });
+});
