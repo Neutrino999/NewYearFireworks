@@ -31,35 +31,48 @@ window.onload = function () {
     animationEffect();
     // 背景音乐
     let audio = document.getElementById('bgm');
+    let clickCount = 0;
+
     document.querySelector("body").onclick = function () {
         if (!autoPlayFlag) {
             audio.play();
             autoPlayFlag = true;
         }
-    }
-    for (let i = 0; i <= 10; i++) {
-        setTimeout(function () {
-            document.querySelector("body > div.message").style.opacity = i / 10;
-        }, i * 60 + 2000)
-    };
-    for (let i = 0; i <= 10; i++) {
-        setTimeout(function () {
-            document.querySelector("body > div.message").style.opacity = 1 - i / 10;
-            if (i == 10) {
-                document.querySelector("body > div.message > p").innerHTML = "点击屏幕可快速释放烟花"
+
+        if (clickCount === 0) {
+            // 第一个文本逐渐消失
+            for (let i = 0; i <= 10; i++) {
+                setTimeout(function () {
+                    document.querySelector("body > div.message").style.opacity = 1 - i / 10;
+                    if (i == 10) {
+                        document.querySelector("body > div.message > p").innerHTML = "点击屏幕可快速释放烟花";
+                        // 第二个文本逐渐出现
+                        for (let j = 0; j <= 10; j++) {
+                            setTimeout(function () {
+                                document.querySelector("body > div.message").style.opacity = j / 10;
+                            }, j * 60);
+                        }
+                    }
+                }, i * 60);
             }
-        }, i * 60 + 8000)
-    };
+        } else if (clickCount === 1) {
+            // 第二个文本逐渐消失
+            for (let i = 0; i <= 10; i++) {
+                setTimeout(function () {
+                    document.querySelector("body > div.message").style.opacity = 1 - i / 10;
+                }, i * 60);
+            }
+        }
+
+        clickCount++;
+    }
+
+    // 初始显示文本
     for (let i = 0; i <= 10; i++) {
         setTimeout(function () {
             document.querySelector("body > div.message").style.opacity = i / 10;
-        }, i * 60 + 8600)
-    };
-    for (let i = 0; i <= 10; i++) {
-        setTimeout(function () {
-            document.querySelector("body > div.message").style.opacity = 1 - i / 10;
-        }, i * 60 + 16600)
-    };
+        }, i * 60 + 2000);
+    }
 };
 
 let lastTime;
@@ -383,3 +396,101 @@ newEmbellishment.prototype = {
         this.paint();
     },
 };
+
+// ========== 可拖拽 & 自动旋转 & 支持触摸的 3D 立方体逻辑 ==========
+(function() {
+    const cube = document.getElementById('cube');
+    if (!cube) return;
+
+    // 是否处于自动旋转、是否正在拖拽
+    let autoRotate = true;
+    let isDragging = false;
+
+    // 当前立方体旋转角度(绕 X, Y 轴)
+    // 与CSS初始 transform: rotateX(-30deg) rotateY(0deg) 对应
+    let angleX = -30;
+    let angleY = 0;
+
+    // 用来记录用户按下拖拽时的鼠标起始点和立方体角度
+    let startX = 0, startY = 0;      // 鼠标/手指起始位置
+    let baseAngleX = angleX, baseAngleY = angleY;  // 拖拽开始前的立方体角度
+
+    // 1. 初次让立方体以该角度显示
+    cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+
+    // 2. 自动旋转动画：在未拖拽时，让angleY不断变化
+    function animateCube() {
+        if (autoRotate && !isDragging) {
+        // 逆时针：每帧减少一些angleY
+        angleY -= 0.3; 
+        // 重新设置立方体transform
+        cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+        }
+        requestAnimationFrame(animateCube);
+    }
+    animateCube();
+
+    // 3. 拖拽/触摸事件
+    // 为了兼容触摸与鼠标，先写一个获取坐标的函数
+    function getEventPosition(e) {
+        if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else {
+        return { x: e.clientX, y: e.clientY };
+        }
+    }
+
+    // 开始拖拽
+    function startDrag(e) {
+        e.preventDefault();
+        autoRotate = false; // 用户一旦拖拽，就关闭自动旋转
+        isDragging = true;
+        cube.style.cursor = 'grabbing';
+
+        const pos = getEventPosition(e);
+        // 记录下拖拽开始时的坐标
+        startX = pos.x;
+        startY = pos.y;
+        // 记录下当前的角度，作为“基准”
+        baseAngleX = angleX;
+        baseAngleY = angleY;
+    }
+
+    // 拖拽中
+    function onDrag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const pos = getEventPosition(e);
+
+        // 计算鼠标/手指移动了多少
+        const dx = pos.x - startX;
+        const dy = pos.y - startY;
+
+        // 将 dx, dy 映射为对angleX, angleY的增减
+        // 你可以自行微调0.3为其他值来改变旋转灵敏度
+        angleX = baseAngleX - dy * 0.3; // 往上拉时，dy为负，所以angleX会增加
+        angleY = baseAngleY + dx * 0.3; // 往右拉时，dx为正，所以angleY会增加
+
+        // 应用到立方体
+        cube.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+    }
+
+    // 结束拖拽
+    function endDrag() {
+        if (isDragging) {
+        isDragging = false;
+        cube.style.cursor = 'grab';
+        // 不恢复 autoRotate，这样用户松开后立方体停留在最后拖拽的姿态
+        }
+    }
+
+    // 4. 监听鼠标事件
+    cube.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+
+    // 5. 监听触摸事件（移动端）
+    cube.addEventListener('touchstart', startDrag, { passive: false });
+    document.addEventListener('touchmove', onDrag, { passive: false });
+    document.addEventListener('touchend', endDrag, { passive: false });
+})();  

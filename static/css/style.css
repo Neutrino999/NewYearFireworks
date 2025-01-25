@@ -7,6 +7,7 @@ body {
     background-color: #161929;
     position: relative;
     overflow: hidden;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -30,7 +31,6 @@ audio {
     opacity: 0;
 }
 
-/* 消息提示框内容样式 */
 .message p {
     line-height: 1;
     font-size:14px;
@@ -66,7 +66,7 @@ audio {
     top: 0;
     left: 80%;
     opacity: 0.3;
-    transform: rotate(-45deg) translate(0, -50px);
+    transform: rotate(-30deg) translate(0, -50px);
     animation: meteor 7s infinite;
 }
 
@@ -86,11 +86,9 @@ audio {
     0% {
         opacity: 0.9;
     }
-
     50% {
         opacity: 0.2;
     }
-
     100% {
         opacity: 0.9;
     }
@@ -98,21 +96,104 @@ audio {
 
 @keyframes meteor {
     0% {
-        transform: rotate(-45deg) translateX(0);
+        transform: rotate(-30deg) translateX(0);
         opacity: 0.3;
     }
-
     10% {
         opacity: 1;
     }
-
     20% {
-        transform: rotate(-45deg) translateX(-100vw);
+        transform: rotate(-30deg) translateX(-100vw);
         opacity: 0;
     }
-
     100% {
-        transform: rotate(-45deg) translateX(-100vw);
+        transform: rotate(-30deg) translateX(-100vw);
         opacity: 0;
     }
+}
+
+#backgroundRendering {
+    z-index: 0;
+}
+
+#fireworks {
+    z-index: 9999;
+}
+
+#contents {
+    display: none;
+}
+
+/* ============ 新增: 3D立方体样式 ============ */
+/* 立方体容器，增大与底部的距离 */
+.cube-container {
+    position: absolute;
+    bottom: 100px;    /* 原先20px，这里调大至100px。可根据需求再调整 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    perspective: 800px; /* 3D 透视距离 */
+    z-index: 2000;
+}
+
+/* 初始就让“上面”更容易看见：rotateX(-30deg) */
+#cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-30deg) rotateY(0deg);
+    cursor: grab;
+}
+
+/* 其余的面设置（大小、背景色、translateZ 等）和之前一样，
+   如果想让顶面文字更明显，也可以自行调整其背景色 */
+.face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid #08075a;
+    box-sizing: border-box;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff0000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+}
+
+.face-front {
+    background-color: #963c32;
+    transform: translateZ(100px);
+}
+.face-back {
+    background-color: #3498db;
+    transform: rotateY(180deg) translateZ(100px);
+}
+.face-left {
+    background-color: #9b59b6;
+    transform: rotateY(-90deg) translateZ(100px);
+}
+.face-right {
+    background-color: #2ecc71;
+    transform: rotateY(90deg) translateZ(100px);
+}
+.face-top {
+    background-color: #f1c40f;
+    transform: rotateX(90deg) translateZ(100px);
+}
+.face-bottom {
+    background-color: #8e4200;
+    transform: rotateX(-90deg) translateZ(100px);
+}
+.face-bottom a {
+    color: #ff0000;
+    text-decoration: none;
+}
+
+.face p {
+    margin: 0;
+    padding: 0;
 }
