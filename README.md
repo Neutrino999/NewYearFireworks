@@ -23,5 +23,6 @@
 ## 与我联系
 - **微信：**  lyzds2017
 
-![additional image](https://github.com/Neutrino999/NewYearFireworks/blob/main/weixin.jpg)
+<img src="https://github.com/Neutrino999/NewYearFireworks/blob/main/weixin.jpg" alt="additional image" width="300"/>
+
 - **邮箱：** [mail@huangweixin.top](mailto:mail@huangweixin.top)
