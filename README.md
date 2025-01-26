@@ -4,7 +4,7 @@
 
 
 ## 效果演示
-![image](https://github.com/Neutrino999/NewYearFireworks/blob/main/effectDemonstration.gif)
+![image](effectDemonstration.gif)
 
 > 如果没有显示，可能是内容较大，请等待一下
 
@@ -23,6 +23,6 @@
 ## 与我联系
 - **微信：**  lyzds2017
 
-<img src="https://github.com/Neutrino999/NewYearFireworks/blob/main/weixin.jpg" alt="additional image" width="300"/>
+<img src="weixin.jpg" alt="additional image" width="300"/>
 
 - **邮箱：** [mail@huangweixin.top](mailto:mail@huangweixin.top)
