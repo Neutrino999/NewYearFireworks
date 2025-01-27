@@ -18,7 +18,7 @@
 
 ## 快速访问👇
 
-[**新年烟花**🎉](http://huangweixin.cn/fireworks/)
+[**新年烟花**🎉](https://huangweixin.cn/fireworks/)
 
 ## 与我联系
 - **微信：**  lyzds2017
